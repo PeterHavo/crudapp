@@ -2,11 +2,12 @@
 require('dotenv').config();
 
 // grab our dependencies
-const express = require('express'),
-  app = express(),
+const express =     require('express'),
+  app =  express(),
   port = process.env.PORT || 3001,
   expressLayouts = require('express-ejs-layouts'),
-  mongoose = require('mongoose');
+  mongoose =       require('mongoose'),
+  bodyParser =     require('body-parser');
 
 // configure our application=================================================
 //tell express where to look for static assets first
@@ -20,7 +21,12 @@ app.use(expressLayouts);
 
 
 // connect to mLab remote database 
-mongoose.connect(process.env.DB_URI, ()=>{console.log('connected')});
+mongoose.connect(process.env.DB_URI, ()=>{console.log('connected to mLab database !')});
+
+
+//use body parser to get info from form 
+app.use(bodyParser.urlencoded({extended: true}));
+
 
 
 // set the routes===========================================================

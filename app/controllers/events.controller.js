@@ -2,7 +2,19 @@ const Event = require('../models/events');
 
 
 module.exports = {
-    showEvents: (req, res) => {
+
+showEvents: showEvents,
+showEvent: showEvent,
+seedEvents: seedEvents,
+showCreate: showCreate,
+processCreate: processCreate
+
+}
+
+
+
+
+     function showEvents (req, res)  {
         // show all events 
 
 
@@ -15,17 +27,39 @@ module.exports = {
         // ];
         // return view with data
 
-        res.render('pages/events', { events: events });
-    },
+        //use mongoose model for all events NOT dummy data ===========================================
 
-    showEvent: (req, res) => {
-        const event = { name: 'Basketball', slug: 'basketball', description: 'Throwing into a basket.' };
-        res.render('pages/event.ejs', { event: event });
-    },
+        Event.find({},(error, events)=>{
+            if(error){
+                res.status('404');
+                res.send('Events not found');
+            }
+            res.render('pages/events', { events: events });
+
+        });
+
+        
+    }
+
+     function showEvent (req, res)  {
+        
+        //  hardcoded dummy data
+        // const event = { name: 'Basketball', slug: 'basketball', description: 'Throwing into a basket.' };
+        Event.find({slug: req.params.slug},(error, event)=>{
+              if(error){
+                res.status('404');
+                res.send('Event not found');
+            }
+            //   res.send(event);
+             res.render('pages/event', { event: event });
+        });
+
+       
+    }
 
     // seed our database 
 
-    seedEvents: (req, res) => {
+     function seedEvents (req, res)  {
         // create some events
         const events = [
             { name: 'Basketball', description: 'Throwing into a basket.' },
@@ -49,4 +83,38 @@ module.exports = {
 
         res.send('database seeded!!!');
     }
-};
+
+    function showCreate (req, res){
+        // res.send('this is a test');
+       res.render('pages/create.ejs');
+    }
+
+
+    // process create form 
+    function showCreate(req, res) {
+         console.log('this process create was called ');
+        res.render('pages/create');
+    }
+
+    /**
+     * Process the creation form
+     */
+    function processCreate(req, res) {
+        console.log('this process create was called ');
+        // create a new event
+        const event = new Event({
+            name: req.body.name,
+            description: req.body.description
+        });
+
+        // save event
+        event.save((err) => {
+            if (err)
+                throw err;
+
+            // redirect to the newly created event
+            res.redirect(`/events/${event.slug}`);
+        });
+    }
+
+   

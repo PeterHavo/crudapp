@@ -51,7 +51,11 @@ processCreate: processCreate
                 res.send('Event not found');
             }
             //   res.send(event);
-             res.render('pages/event', { event: event });
+             res.render('pages/event', { 
+                 event: event,
+                 sucess: req.flash('success')
+                
+            });
         });
 
        
@@ -92,7 +96,7 @@ processCreate: processCreate
 
     // process create form 
     function showCreate(req, res) {
-         console.log('this process create was called ');
+        
         res.render('pages/create');
     }
 
@@ -100,7 +104,7 @@ processCreate: processCreate
      * Process the creation form
      */
     function processCreate(req, res) {
-        console.log('this process create was called ');
+       
         // create a new event
         const event = new Event({
             name: req.body.name,
@@ -111,7 +115,8 @@ processCreate: processCreate
         event.save((err) => {
             if (err)
                 throw err;
-
+            //set a sucessful flash message
+            req.flash('success','Successfuly created event !');
             // redirect to the newly created event
             res.redirect(`/events/${event.slug}`);
         });

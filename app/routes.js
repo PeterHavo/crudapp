@@ -2,8 +2,8 @@
 const express = require('express'),
   router = express.Router(),
   mainController = require('./controllers/main.controller'),
-  eventController = require('./controllers/events.controller'),
-  testController = require('./controllers/test.controller');
+  eventController = require('./controllers/events.controller');
+ 
 
  
 
@@ -29,9 +29,6 @@ router.get('/event/create', eventController.showCreate);
 router.post('/event/create', eventController.processCreate);
 
 
-// router.get('/test', (req, res)=>{
-//   console.log('is working');
-//   res.send('this is a working test');
-// });
+
 // edit an event
 // delete an event 

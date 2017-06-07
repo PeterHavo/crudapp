@@ -10,7 +10,8 @@ const express =     require('express'),
   bodyParser     = require('body-parser'),
   session        = require('express-session'),
   cookieParser   = require('cookie-parser'),
-  flash          = require('flash');
+  flash          = require('connect-flash'),
+  expressValidator= require('express-validator');
 
 // configure our application=================================================
 
@@ -43,6 +44,8 @@ mongoose.connect(process.env.DB_URI, ()=>{console.log('connected to mLab databas
 //use body parser to get info from form 
 app.use(bodyParser.urlencoded({extended: true}));
 
+//express validator base on documentation must be under body parser !! it use to grao information from form and validate it !
+app.use(expressValidator());
 
 
 // set the routes===========================================================

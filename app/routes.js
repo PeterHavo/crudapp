@@ -31,4 +31,7 @@ router.post('/event/create', eventController.processCreate);
 
 
 // edit an event
+
+router.get('/event/:slug/edit', eventController.showEdit);
+router.post('/event/:slug', eventController.processEdit);
 // delete an event 

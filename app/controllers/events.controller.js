@@ -7,7 +7,9 @@ showEvents: showEvents,
 showEvent: showEvent,
 seedEvents: seedEvents,
 showCreate: showCreate,
-processCreate: processCreate
+processCreate: processCreate,
+showEdit: showEdit,
+processEdit: processEdit
 
 }
 
@@ -53,7 +55,7 @@ processCreate: processCreate
             //   res.send(event);
              res.render('pages/event', { 
                  event: event,
-                 sucess: req.flash('success')
+                 success: req.flash('success')
                 
             });
         });
@@ -88,23 +90,30 @@ processCreate: processCreate
         res.send('database seeded!!!');
     }
 
-    function showCreate (req, res){
-        // res.send('this is a test');
-       res.render('pages/create.ejs');
-    }
-
+   
 
     // process create form 
     function showCreate(req, res) {
         
-        res.render('pages/create');
+        res.render('pages/create', {
+            errors: req.flash('errors')
+        });
     }
 
     /**
      * Process the creation form
      */
     function processCreate(req, res) {
-       
+        //validate information
+        req.checkBody('name','Name is required!').notEmpty();
+        req.checkBody('description','description is reuired!').notEmpty();
+
+        // if there are errors, redirect and save errors to flash data 
+        const err = req.validationErrors();
+        if (err){
+            req.flash('errors',err.map(err=>err.msg));
+            return res.redirect('/event/create');
+        }
         // create a new event
         const event = new Event({
             name: req.body.name,
@@ -122,4 +131,50 @@ processCreate: processCreate
         });
     }
 
-   
+    function showEdit(req, res) {
+        console.log(req.params.slug);
+        Event.findOne({slug: req.params.slug}, (err, event)=>{
+            
+            // res.send(JSON.stringify(event));
+            res.render('pages/edit',{
+                event:event,
+                errors: req.flash('errors')
+            });
+        })
+        
+    }
+
+    /**
+     * Process the edit form 
+     */
+    function processEdit(req, res) {
+           //validate information
+        req.checkBody('name','Name is required!').notEmpty();
+        req.checkBody('description','description is reuired!').notEmpty();
+
+        // if there are errors, redirect and save errors to flash data 
+        const err = req.validationErrors();
+        if (err){
+            req.flash('errors',err.map(err=>err.msg));
+            return res.redirect(`/event/${req.params.slug}/edit`);
+        }
+       //finding currect event
+       Event.findOne({ slug: req.params.slug }, (err, event)=>
+       {
+        //updating that event 
+         event.name = req.body.name;
+         event.description = req.body.description;
+         event.save(err=>{
+             if (err)
+                throw err;
+              //    success flush message
+             req.flash('success', 'successfully updated event')  
+             res.redirect('/events');
+            
+         });
+         
+         //    redirect back to the events
+       })
+         
+      
+    }

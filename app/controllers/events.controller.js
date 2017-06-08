@@ -9,7 +9,8 @@ seedEvents: seedEvents,
 showCreate: showCreate,
 processCreate: processCreate,
 showEdit: showEdit,
-processEdit: processEdit
+processEdit: processEdit,
+deleteEvent: deleteEvent
 
 }
 
@@ -137,7 +138,7 @@ processEdit: processEdit
             
             // res.send(JSON.stringify(event));
             res.render('pages/edit',{
-                event:event,
+                event: event,
                 errors: req.flash('errors')
             });
         })
@@ -178,3 +179,12 @@ processEdit: processEdit
          
       
     }
+
+    function deleteEvent (req, res){
+        console.log(req.params.slug);
+        Event.remove({slug:req.params.slug},(err)=>{
+            req.flash('success', 'Event deleted!');
+            res.redirect('/events');
+        })
+    
+}

@@ -1,3 +1,5 @@
+
+
 // create a new express router
 const express = require('express'),
   router = express.Router(),
@@ -34,4 +36,16 @@ router.post('/event/create', eventController.processCreate);
 
 router.get('/event/:slug/edit', eventController.showEdit);
 router.post('/event/:slug', eventController.processEdit);
+
+
 // delete an event 
+// router.get('/eventor/:slug/delete', (req, res)=>{
+//   console.log(req.params.slug);
+//   Event2.remove({slug:req.params.slug},(err)=>{
+//      req.flash('success', 'Event deleted!');
+//      res.redirect('/events');
+//   })
+    
+// });
+
+router.get('/eventor/:slug/delete',eventController.deleteEvent);
